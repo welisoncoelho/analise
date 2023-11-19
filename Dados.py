@@ -3,7 +3,7 @@ import streamlit as st
 import openpyxl as op
 
 
-st.title("Aplicativo an+alise Preços de combustivel/GLP")
+st.title("Aplicativo análise Preços de combustivel/GLP")
 
 
 st.markdown(""" 
