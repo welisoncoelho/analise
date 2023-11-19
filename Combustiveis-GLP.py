@@ -1,20 +1,11 @@
 import pandas as pd
 import streamlit as st
-import openpyxl as op
 
 # Substitua 'precos_combustiveis.xlsx' pelo nome do seu arquivo Excel
 arquivo_excel = 'precos_combustiveis.xlsx'
 
-# Carregue o arquivo Excel com openpyxl
-wb = op.load_workbook(arquivo_excel)
-
-# Selecione a primeira planilha
-sheet = wb.active
-
-# Converta os dados da planilha em uma lista de listas
-data = sheet.values
-cols = next(data)
-df = pd.DataFrame(data, columns=cols, dtype=str)  # Defina o tipo de dado como string
+# Carregue o arquivo Excel com pandas
+df = pd.read_excel(arquivo_excel, dtype=str)
 
 # Filtros selectbox no sidebar
 filtro_estado = st.sidebar.selectbox('Selecione o Estado', ["Todos"] + list(df['ESTADO'].unique()))
@@ -29,7 +20,12 @@ else:
 
 # Filtros adicionais
 filtro_bandeira = st.sidebar.selectbox('Selecione a Bandeira', ["Todos"] + list(df['BANDEIRA'].unique()))
-filtro_bairro = st.sidebar.selectbox('Selecione o Bairro', ["Todos"] + list(df[df['MUNICÍPIO'] == filtro_municipio]['BAIRRO'].unique()))
+
+# Se o município não for "Todos", filtre os bairros
+if filtro_municipio != "Todos":
+    filtro_bairro = st.sidebar.selectbox('Selecione o Bairro', ["Todos"] + list(df[df['MUNICÍPIO'] == filtro_municipio]['BAIRRO'].unique()))
+else:
+    filtro_bairro = "Todos"
 
 # Acesse a coluna 'PREÇO DE REVENDA' e converta para tipo numérico
 df['PREÇO DE REVENDA'] = pd.to_numeric(df['PREÇO DE REVENDA'], errors='coerce')
